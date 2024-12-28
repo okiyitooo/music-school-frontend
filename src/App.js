@@ -1,24 +1,20 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import AppRoutes from './routes/AppRoutes.jsx'
+import { AuthContext } from './context/AuthContext';
+import { ChakraProvider } from '@chakra-ui/react';
+import theme from './assets/styles/theme.js/index.js'
 
 function App() {
+  const [auth, setAuth] = useState({ isAuthenticated: false, user: null, token: null})
+  const logout = () => {
+    setAuth({ isAuthenticated: false, user:null, token:null })
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ChakraProvider theme={theme}>
+      <AuthContext.ChakraProvider value={{auth, setAuth, logout}}>
+        <AppRoutes/>
+      </AuthContext.ChakraProvider>
+    </ChakraProvider>
   );
 }
 
