@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import AppRoutes from './routes/AppRoutes.jsx'
 import { AuthContext } from './context/AuthContext';
 import { ChakraProvider } from '@chakra-ui/react';
-import theme from './assets/styles/theme.js/index.js'
+import theme from './assets/styles/theme'
 
 function App() {
   const [auth, setAuth] = useState({ isAuthenticated: false, user: null, token: null})
@@ -11,9 +11,9 @@ function App() {
   }
   return (
     <ChakraProvider theme={theme}>
-      <AuthContext.ChakraProvider value={{auth, setAuth, logout}}>
+      <AuthContext.Provider value={{auth, setAuth, logout}}>
         <AppRoutes/>
-      </AuthContext.ChakraProvider>
+      </AuthContext.Provider>
     </ChakraProvider>
   );
 }
