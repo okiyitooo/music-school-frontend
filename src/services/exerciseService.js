@@ -22,10 +22,6 @@ const deleteExercise = async (exerciseId) => {
     return await axios.delete(`${API_URL}/${exerciseId}`);
 };
 
-const getAllExercisesByCourseId = async (courseId) => {
-    return await axios.get(`${API_URL}?courseId=${courseId}`)
-};
-
 const getAllExercisesByTopicId = async (topicId) => {
     return await axios.get(`${API_URL}?topicId=${topicId}`)
 };
@@ -35,7 +31,6 @@ export const exerciseService = {
     getAllExercises,
     getExerciseById,
     updateExercise,
-    deleteExercise,
-    getAllExercisesByCourseId
+    deleteExercise
     ,getAllExercisesByTopicId
 };

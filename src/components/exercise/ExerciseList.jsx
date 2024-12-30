@@ -19,8 +19,6 @@ const ExerciseList = () => {
                 let response;
                 if (topicId) {
                     response = await exerciseService.getAllExercisesByTopicId(topicId);
-                } else {
-                    response = await exerciseService.getAllExercisesByCourseId(courseId);
                 }
                 setExercises(response.data);
             } catch (err) {

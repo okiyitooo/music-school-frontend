@@ -6,17 +6,17 @@ const MatchingComponent = ({ question, pairs, selectedPairs, onChange, onSubmit 
         <Flex direction={'column'}>
             <Text mb={4}>{question || "Match the pairs"}</Text>
             <Stack spacing={4}>
-                {pairs.map((pair, index) => (
-                    <Flex key={index} align="center">
-                        <Text width={"50px"}>{pair.left}</Text>
+                {Object.keys(pairs).map((key) => (
+                    <Flex key={key} align="center" direction={'row'}>
+                        <Text width={"50px"}>{key}</Text>
                         <Select 
                             placeholder="choose match" 
-                            value={selectedPairs[index] || ''} 
-                            onChange={(e) => onChange(index, e.target.value)}
+                            value={selectedPairs[key] || ''} 
+                            onChange={(e) => onChange(key, e.target.value)}
                         >
-                            {pair.right.map((option, idx) => (
-                                <option key={idx} value={option}>
-                                    {option}
+                            {Object.values(pairs).map((value) => (
+                                <option key={value} value={value}>
+                                    {value}
                                 </option>
                             ))}
                         </Select>
