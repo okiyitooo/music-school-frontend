@@ -7,6 +7,7 @@ import CourseDetail from '../components/course/CourseDetail';
 import TopicList from '../components/topic/TopicList';
 import TopicDetail from '../components/topic/TopicDetail';
 import ExerciseList from '../components/exercise/ExerciseList';
+import ExerciseDetail from '../components/exercise/ExerciseDetail';
 // import UserProfile from '../components/user/UserProfile';
 // import UserList from '../components/user/UserList';
 import Header from '../components/layout/Header';
@@ -92,6 +93,7 @@ const AppRoutes = () => {
                         <Route path="/courses/:courseId/topics/:topicId/edit" element={<PrivateRoute><InstructorRoute><TopicForm /></InstructorRoute></PrivateRoute>} />
                         <Route path="courses/:courseId/topic/:topicId/exercises" element={<PrivateRoute><ExerciseList /></PrivateRoute>} />
                         <Route path="/courses/:courseId/exercises" element={<PrivateRoute><ExerciseList /></PrivateRoute>} />
+                        <Route path="/courses/:courseId/exercises/:exerciseId" element={<PrivateRoute><ExerciseDetail /></PrivateRoute>} />
                         {/* 
                         <Route path="/profile" element={<PrivateRoute><UserProfile /></PrivateRoute>} />
                         <Route path="/users" element={<PrivateRoute><AdminRoute><UserList /></AdminRoute></PrivateRoute>} />
