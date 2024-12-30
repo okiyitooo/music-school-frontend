@@ -13,7 +13,10 @@ const CourseForm = () => {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [categories, setCategories] = useState('');
-    const [prerequisites, setPrerequisites] = useState('');
+    
+    const [courses, setCourses] = useState([])// courses: objects
+    const [prerequisites, setPrerequisites] = useState([]);// prerequisite: courseIds
+
     const [difficultyLevel, setDifficultyLevel] = useState('');
     const [instructorIds, setInstructorIds] = useState('');
     const [availableInstructors, setAvailableInstructors] = useState([]);
@@ -24,6 +27,27 @@ const CourseForm = () => {
     const difficultyOptions = ["veryEasy", "easy", "medium", "hard", "ultraHard"];
 
     useEffect(() => {
+        const fetchCourses = async() => {
+
+            try {
+                const response = await courseService.getAllCourses();
+                console.log(response)
+                if (response.status===200) {
+                    const courses = response.data;
+                    setCourses(courses)
+                }
+            } catch (err) {
+                toast({
+                    title: "Error",
+                    description: err.response?.data?.message || "Failed to fetch courses.",
+                    status: 'error',
+                    duration: 5000,
+                    isClosable: true
+                })
+                navigate('/courses');
+            }
+            setLoading(false)
+        }
         const fetchCourse = async() => {
             if (courseId) {
                 try {
@@ -70,9 +94,17 @@ const CourseForm = () => {
                 setLoading(false);
             }
         }
+        fetchCourses()
         fetchCourse();
         fetchInstructors();
     }, [courseId, toast, navigate, auth.user?.roles]);
+    const handlePrerequisiteChange = async(e) => {
+        if (prerequisites?.includes(e.target.value)){
+            setPrerequisites(prerequisites.filter(prerequisite=>prerequisite!==e.target.value))
+        } else {
+            setPrerequisites([...prerequisites, e.target.value])
+        }
+    }
     const handleInstructorChange = async() => {
         if (instructorIds?.includes(auth.user.userId)){
             setInstructorIds(instructorIds.split(',')
@@ -170,10 +202,17 @@ const CourseForm = () => {
                     </Box>
                     <Box flex="1" >
                         <FormControl mb="4">
-                            <FormLabel htmlFor="prerequisites">Prerequisites (comma separated)</FormLabel>
-                            <Input type="text" id="prerequisites" value={prerequisites}
-                                onChange={(e) => setPrerequisites(e.target.value)}
-                            />
+                            <FormLabel htmlFor="prerequisites">Prerequisites:</FormLabel>
+                            <Select variant="outline" id="prerequisites" placeholder=" "
+                                    value={"prerequisites"}
+                                    onChange={handlePrerequisiteChange}
+                                >
+                                    {courses.map((course) => (
+                                        <option style={prerequisites.includes(course.courseId)?{backgroundColor:'teal'}:{backgroundColor:'azure'}}key={course.courseId} value={course.courseId}>
+                                            {course.name}
+                                        </option>
+                                        ))}
+                                </Select>
                         </FormControl>
                         <FormControl mb="4">
                             <FormLabel htmlFor="difficultyLevel">Difficulty Level</FormLabel>
@@ -189,13 +228,15 @@ const CourseForm = () => {
                             auth?.user?.roles?.includes("ADMIN") 
                                 ?
                             (<FormControl>
-                                <FormLabel htmlFor="instructorIds">Instructors: {availableInstructors?.filter(instructor=>instructorIds?.includes(instructor.userId)).map(instructor=>` ${instructor.firstName} ${instructor.lastName}.`)}</FormLabel>
-                                <Select variant="flushed" id="instructorIds" placeholder="Select instructors"
+                                <FormLabel htmlFor="instructorIds">Instructors:</FormLabel>
+                                <Select variant="flushed" id="instructorIds" placeholder=" "
                                     value={"instructorIds"}
                                     onChange={handleAdminInstructorChange}
                                 >
                                     {availableInstructors.map((instructor) => (
-                                        <option key={instructor.userId} value={instructor.userId}>
+                                        <option 
+                                        style={instructorIds.includes(instructor.userId)?{backgroundColor:'aquamarine'}:{backgroundColor:'ghostwhite'}}
+                                        key={instructor.userId} value={instructor.userId}>
                                             {instructor.firstName} {instructor.lastName}
                                         </option>
                                         ))}
