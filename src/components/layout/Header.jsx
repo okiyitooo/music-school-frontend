@@ -15,7 +15,7 @@ const Header = () => {
     };
 
     return (
-        <Flex as="nav" bg="gray.200" p="4" align="center">
+        <Flex as="nav" bg="gray.200" p="4" align="center" >
             <Heading as="h1" size="lg">
                 <Link to="/">Music Theory Platform</Link>
             </Heading>

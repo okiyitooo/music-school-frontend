@@ -21,7 +21,6 @@ const CourseDetail = () => {
             try {
                 const response = await courseService.getCourseById(courseId);
                 setCourse(response.data);
-                console.log(response.data)
             } catch (err) {
                 toast({
                     title: "Error",

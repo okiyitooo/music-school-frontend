@@ -4,9 +4,12 @@ export const api = axios.create({
     baseURL: API_BASE_URL,
 });
 api.interceptors.request.use((config) => {
-    const {token} = JSON.parse(localStorage.getItem('auth'))
-    if (token && !config.url.startsWith('/auth')) {
-        config.headers.Authorization = `Bearer ${token}`;
+    const auth = localStorage.getItem('auth');
+    if (auth){
+        const {token} = JSON.parse(auth)
+        if (token && !config.url.startsWith('/auth')) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
     }
     return config;
 }, (error) => {

@@ -11,9 +11,10 @@ const Login = () => {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState('')
-    const { setAuth } = useContext(AuthContext)
+    const { setAuth, logout } = useContext(AuthContext)
     const { setStoredAuth } = useAuth()
     const handleSubmit = async (e) => {
+        logout();
         e.preventDefault()
         try {
             const response = await authService.login({username, password})

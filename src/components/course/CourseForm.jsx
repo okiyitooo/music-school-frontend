@@ -1,9 +1,7 @@
 import React, {useState, useEffect, useContext} from 'react';
 import { Flex, Heading, FormControl, FormLabel, Input, Button, Textarea, 
-            useToast, Select, CheckboxGroup, Checkbox, Popover, PopoverTrigger, PopoverContent, 
-            PopoverBody, PopoverCloseButton, useDisclosure, Box, 
-            Divider} from '@chakra-ui/react';
-import {Form, useNavigate, useParams} from 'react-router-dom';
+            useToast, Select, Box,  } from '@chakra-ui/react';
+import {useNavigate, useParams} from 'react-router-dom';
 import {courseService} from '../../services/courseService';
 import {useAuth} from "../../hooks/useAuth";
 import Loading from "../reusable/Loading";
@@ -20,11 +18,9 @@ const CourseForm = () => {
     const [instructorIds, setInstructorIds] = useState('');
     const [availableInstructors, setAvailableInstructors] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [instructorDropdownOpen, setInstructorDropdownOpen] = useState(false);
     const toast = useToast();
     const { auth } = useContext(AuthContext);
     const { clearAuth } = useAuth();
-    const { isOpen, onOpen, onClose } = useDisclosure();
     const difficultyOptions = ["veryEasy", "easy", "medium", "hard", "ultraHard"];
 
     useEffect(() => {
@@ -56,25 +52,27 @@ const CourseForm = () => {
             }
         }
         const fetchInstructors = async () => {
-            try {
-                const response = await userService.getAllInstructors();
-                const instructors = response.data
-                console.log(instructors);
-                setAvailableInstructors(instructors);
-            } catch (err) {
-                toast({
-                    title: "Error",
-                    description: err.response?.data?.message || "Failed to fetch instructors.",
-                    status: 'error',
-                    duration: 5000,
-                    isClosable: true
-                })
+            if (auth.user?.roles?.includes("ADMIN")) {
+                setLoading(true);
+                try {
+                    const response = await userService.getAllInstructors();
+                    const instructors = response.data
+                    setAvailableInstructors(instructors);
+                } catch (err) {
+                    toast({
+                        title: "Error",
+                        description: err.response?.data?.message || "Failed to fetch instructors.",
+                        status: 'error',
+                        duration: 5000,
+                        isClosable: true
+                    })
+                }
+                setLoading(false);
             }
-            setLoading(false);
         }
         fetchCourse();
         fetchInstructors();
-    }, [courseId, toast, navigate]);
+    }, [courseId, toast, navigate, auth.user?.roles]);
     const handleInstructorChange = async() => {
         if (instructorIds?.includes(auth.user.userId)){
             setInstructorIds(instructorIds.split(',')
@@ -84,16 +82,13 @@ const CourseForm = () => {
                 .filter(id=> id.trim()!==""), auth.user.userId].join(','))
         }
     }
-    const handleAdminInstructorChange = (ids) => {
-        setInstructorIds(ids.join(','));
-    }
-    const handlePopoverOpen = () => {
-        onOpen();
-        setInstructorDropdownOpen(true);
-    }
-    const handlePopoverClose = () => {
-        onClose();
-        setInstructorDropdownOpen(false);
+    const handleAdminInstructorChange = async (e) => {
+        e.preventDefault()
+        if (instructorIds?.includes(e.target?.value)){
+            setInstructorIds(instructorIds?.split(',').filter(id=> id!==e.target.value).join(','))
+        } else {
+            setInstructorIds([...instructorIds?.split(',').filter(id => id.trim()!=="" ),e.target.value].join(','))
+        }
     }
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -152,8 +147,8 @@ const CourseForm = () => {
             <Heading as="h2" size="xl" mb="6">{courseId ? 'Edit Course' : 'Create Course'}
             </Heading>
             <form onSubmit={handleSubmit}>
-                <Flex direction="column" flexWrap="wrap" >
-                    <div style={{ flex: 1 }}>
+                <Flex direction="row" flexWrap="wrap" >
+                    <Box flex="1" pr={4}>
                         <FormControl mb="4">
                             <FormLabel htmlFor="name">Name</FormLabel>
                             <Input type="text" id="name" value={name} 
@@ -172,8 +167,8 @@ const CourseForm = () => {
                                 onChange={(e) => setCategories(e.target.value)}
                             />
                         </FormControl>
-                    </div>
-                    <div style={{ flex: 1 }}>
+                    </Box>
+                    <Box flex="1" >
                         <FormControl mb="4">
                             <FormLabel htmlFor="prerequisites">Prerequisites (comma separated)</FormLabel>
                             <Input type="text" id="prerequisites" value={prerequisites}
@@ -188,36 +183,23 @@ const CourseForm = () => {
                                     {difficultyOptions.map(option =>
                                         <option value={option} key={option}>{option}</option>
                                     )}
-                                </Select>
+                            </Select>
                         </FormControl>
                         {
                             auth?.user?.roles?.includes("ADMIN") 
                                 ?
                             (<FormControl>
-                                <FormLabel htmlFor="instructorIds">Instructors</FormLabel>
-                                <Popover isOpen={isOpen} onOpen={handlePopoverOpen} onClose={handlePopoverOpen}
-                                        placement='bottom-start'>
-                                    <PopoverTrigger>
-                                        <Input id="instructorIds" placeholder="Edit Instructors" isReadOnly={true}/>
-                                    </PopoverTrigger>
-                                    <PopoverContent width="fit-content">
-                                        <PopoverCloseButton/>
-                                        <PopoverBody>
-                                            <CheckboxGroup id="instructorIds" 
-                                            value={instructorIds.split(",").filter(id => id.trim() != "")}
-                                            onChange={handleAdminInstructorChange}>
-                                                <Flex direction={'column'}>
-                                                    {
-                                                        availableInstructors?.map(instructor=>
-                                                            (<Checkbox key={instructor.userId} value={instructor.userId}>
-                                                                {instructor.firstName} {instructor.lastName}
-                                                            </Checkbox>
-                                                    ))}
-                                                </Flex>
-                                            </CheckboxGroup>
-                                        </PopoverBody>
-                                    </PopoverContent>
-                                </Popover>
+                                <FormLabel htmlFor="instructorIds">Instructors: {availableInstructors?.filter(instructor=>instructorIds?.includes(instructor.userId)).map(instructor=>` ${instructor.firstName} ${instructor.lastName}.`)}</FormLabel>
+                                <Select variant="flushed" id="instructorIds" placeholder="Select instructors"
+                                    value={"instructorIds"}
+                                    onChange={handleAdminInstructorChange}
+                                >
+                                    {availableInstructors.map((instructor) => (
+                                        <option key={instructor.userId} value={instructor.userId}>
+                                            {instructor.firstName} {instructor.lastName}
+                                        </option>
+                                        ))}
+                                </Select>
                             </FormControl>)
                                 :
                             (<FormControl>
@@ -227,7 +209,7 @@ const CourseForm = () => {
                                 </Button>
                             </FormControl>)
                         }
-                    </div>
+                    </Box>
                 </Flex>
                 
                 <Button type="submit" colorScheme="blue" width="100%">
