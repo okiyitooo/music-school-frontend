@@ -244,9 +244,9 @@ const CourseForm = () => {
                             </FormControl>)
                                 :
                             (<FormControl>
-                                <FormLabel htmlFor="instructorIds">{instructorIds?.includes(auth?.user?.userId)?"Drop":"Add"} course?</FormLabel>
+                                <FormLabel htmlFor="instructorIds">{instructorIds?.includes(auth?.user?.userId)?"Drop":"Add"}</FormLabel>
                                 <Button onClick={handleInstructorChange} colorScheme={instructorIds?.includes(auth?.user?.userId) ? "maroon" : "lime"}>
-                                    {instructorIds?.includes(auth?.user?.userId) ? "Drop course" : "Add course"}
+                                    {instructorIds?.includes(auth?.user?.userId) ? "Drop" : "Add"}
                                 </Button>
                             </FormControl>)
                         }
