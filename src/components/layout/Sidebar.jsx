@@ -5,7 +5,7 @@ import {AuthContext} from "../../context/AuthContext";
 
 const Sidebar = () => {
     const location=useLocation();
-    const isCoursePage=location.pathname.startsWith("/courses");
+    const isCoursePage=location.pathname.startsWith("/courses/");
     const {auth} = useContext(AuthContext);
     return (
         <Box as="aside" width="250px" bg="gray.50" p="4" height="100vh">

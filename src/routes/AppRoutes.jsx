@@ -4,7 +4,8 @@ import Login from '../components/auth/Login.jsx';
 import Register from '../components/auth/Register.jsx';
 import CourseList from '../components/course/CourseList';
 import CourseDetail from '../components/course/CourseDetail';
-// import TopicList from '../components/topic/TopicList';
+import TopicList from '../components/topic/TopicList';
+import TopicDetail from '../components/topic/TopicDetail';
 // import ExerciseList from '../components/exercise/ExerciseList';
 // import UserProfile from '../components/user/UserProfile';
 // import UserList from '../components/user/UserList';
@@ -17,7 +18,7 @@ import { AuthContext } from '../context/AuthContext';
 import { useAuth } from '../hooks/useAuth';
 import { authService } from '../services/authService.js';
 import CourseForm from '../components/course/CourseForm';
-// import TopicForm from '../components/topic/TopicForm';
+import TopicForm from '../components/topic/TopicForm';
 // import ExerciseForm from '../components/exercise/ExerciseForm';
 // import UserForm from '../components/user/UserForm';
 
@@ -85,13 +86,15 @@ const AppRoutes = () => {
                         <Route path="/courses/:courseId" element={<PrivateRoute><CourseDetail /></PrivateRoute>} />
                         <Route path="/courses/create" element={<PrivateRoute><InstructorRoute><CourseForm /></InstructorRoute></PrivateRoute>} />
                         <Route path="/courses/:courseId/edit" element={<PrivateRoute><InstructorRoute><CourseForm /></InstructorRoute></PrivateRoute>} />
-                        {/* 
                         <Route path="/courses/:courseId/topics" element={<PrivateRoute><TopicList /></PrivateRoute>} />
+                        <Route path="/courses/:courseId/topics/:topicId" element={<PrivateRoute><TopicDetail /></PrivateRoute>} />
+                        <Route path="/courses/:courseId/topics/create" element={<PrivateRoute><InstructorRoute><TopicForm /></InstructorRoute></PrivateRoute>} />
+                        <Route path="/courses/:courseId/topics/:topicId/edit" element={<PrivateRoute><InstructorRoute><TopicForm /></InstructorRoute></PrivateRoute>} />
+                        {/* 
+                        <Route path="/topic/:topicId/exercises" element={<PrivateRoute><ExerciseList /></PrivateRoute>} />
                         <Route path="/courses/:courseId/exercises" element={<PrivateRoute><ExerciseList /></PrivateRoute>} />
                         <Route path="/profile" element={<PrivateRoute><UserProfile /></PrivateRoute>} />
                         <Route path="/users" element={<PrivateRoute><AdminRoute><UserList /></AdminRoute></PrivateRoute>} />
-                        <Route path="/courses/:courseId/topics/create" element={<PrivateRoute><InstructorRoute><TopicForm /></InstructorRoute></PrivateRoute>} />
-                        <Route path="/courses/:courseId/topics/:topicId/edit" element={<PrivateRoute><InstructorRoute><TopicForm /></InstructorRoute></PrivateRoute>} />
                         <Route path="/courses/:courseId/exercises/create" element={<PrivateRoute><InstructorRoute><ExerciseForm /></InstructorRoute></PrivateRoute>} />
                         <Route path="/courses/:courseId/exercises/:exerciseId/edit" element={<PrivateRoute><InstructorRoute><ExerciseForm /></InstructorRoute></PrivateRoute>} />
                         <Route path="/users/create" element={<PrivateRoute><AdminRoute><UserForm /></AdminRoute></PrivateRoute>} />

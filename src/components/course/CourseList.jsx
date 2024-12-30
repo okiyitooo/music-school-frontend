@@ -1,12 +1,15 @@
 import { Heading, Flex, Text, Stack, useToast } from '@chakra-ui/react'
 import React, {useState, useEffect} from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { courseService } from '../../services/courseService';
 import Card from '../reusable/Card';
 import Button from '../reusable/Button';
 import Loading from "../reusable/Loading";
+import { useAuth } from '../../hooks/useAuth'
 
 const CourseList = () => {
+    const { clearAuth } = useAuth();
+    const navigate = useNavigate();
 
     const [courses, setCourses] = useState([])
     const [loading, setLoading] = useState(true)
@@ -24,11 +27,15 @@ const CourseList = () => {
                     ,duration: 5000,
                     isClosable: true
                 })
+                if (err.response?.status === 401){
+                    clearAuth();
+                    navigate("/login");
+                }
             }
             setLoading(false);
         }
         fetchCourses();
-    }, [toast])
+    }, [toast, navigate,clearAuth])
     if (loading)
         return (<Loading message='Loading courses...'/>);
     return (
