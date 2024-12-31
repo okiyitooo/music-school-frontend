@@ -7,8 +7,7 @@ import ShortAnswerComponent from './question/ShortAnswerComponent';
 import MatchingComponent from './question/MatchingComponent';
 import TrueFalseComponent from './question/TrueFalseComponent';
 
-const ExerciseView = ({exercise}) => {
-    const { courseId } = useParams();
+const ExerciseView = ({exercise, onSubmit}) => {
     const [selectedOption, setSelectedOption] = useState('');
     const [answer, setAnswer] = useState('');
     const [selectedPairs, setSelectedPairs] = useState({});
@@ -72,13 +71,12 @@ const ExerciseView = ({exercise}) => {
         console.log('Submitted');
     };
 
-    if (completed) return 
-        <Flex>
-            <Text>Exercise Completed!!!</Text>
-            <Link to={`/courses/${courseId}/topics/${exercise.topicId}`}>
-                <Button>Back to topic</Button>
-            </Link>
-        </Flex>;
+    if (completed) return (
+        <Flex direction="column" align="center" justify="center" p="4">
+            <Text fontSize="xl" mb="4">Exercise Completed!!!</Text>
+            <Button onClick={onSubmit} colorScheme="blue">Back to course</Button>
+        </Flex>
+    );
 
     if (!exercise) return <Text>Exercise not found</Text>;
 
