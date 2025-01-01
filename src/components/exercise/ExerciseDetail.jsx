@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Box, Button, Flex, Heading, Text, useToast } from '@chakra-ui/react';
 import { exerciseService } from '../../services/exerciseService';
-import Loading from '../common/Loading';
+import Loading from '../reusable/Loading';
 import ExerciseView from './ExerciseView';
 import Card from '../reusable/Card';
 import { AuthContext } from '../../context/AuthContext';

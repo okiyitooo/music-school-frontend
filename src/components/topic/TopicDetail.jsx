@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { Heading, Text, Flex, Box, Button, useToast } from '@chakra-ui/react';
+import { Heading, Text, Flex, Box, Button, useToast, HStack } from '@chakra-ui/react';
 import { topicService } from '../../services/topicService';
 import { exerciseService } from '../../services/exerciseService';
 
@@ -74,16 +74,18 @@ const TopicDetail = () => {
                     <Text><strong>Exercises:</strong> {exercises.map(exercise=>exercise.name).join('\n')+"."}</Text>}
                 </Box>
                 <Flex justify="space-between" mt={4}>
-                    {exercises && <Button as={Link} colorScheme='lime' to={`/topics/${topicId}/topics`}>
-                        View Exercises
-                    </Button>}
-                    {
-                        (roles?.includes("ADMIN") || roles?.includes("INSTRUCTOR"))
-                            &&
-                        <Link to={`/courses/${courseId}/topics/${topicId}/edit`}>
-                            <Button>Edit Topic</Button>
-                        </Link>
-                    }
+                    <HStack>
+                        <Button as={Link} colorScheme='green' to={`exercises`}>
+                            View Exercises
+                        </Button>
+                        {
+                            (roles?.includes("ADMIN") || roles?.includes("INSTRUCTOR"))
+                                &&
+                            <Link to={`edit`}>
+                                <Button>Edit Topic</Button>
+                            </Link>
+                        }
+                    </HStack>
                 </Flex>
             </Card>
         </Flex>

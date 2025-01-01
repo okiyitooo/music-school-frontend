@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
 import { Box, Heading, Text, Flex, Button, useToast } from '@chakra-ui/react';
 import MultipleChoiceComponent from './question/MultipleChoiceComponent';
 import FillInTheBlankComponent from './question/FillInTheBlankComponent';
@@ -7,6 +6,30 @@ import ShortAnswerComponent from './question/ShortAnswerComponent';
 import MatchingComponent from './question/MatchingComponent';
 import TrueFalseComponent from './question/TrueFalseComponent';
 
+/**
+ * ExerciseView component renders different types of exercises and handles their submission.
+ *
+ * @param {Object} props - The component props.
+ * @param {Object} props.exercise - The exercise data.
+ * @param {Function} props.onSubmit - Callback function to be called when the exercise is completed.
+ *
+ * @returns {JSX.Element} The rendered component.
+ *
+ * @component
+ * @example
+ * const exercise = {
+ *   name: 'Sample Exercise',
+ *   description: 'This is a sample exercise.',
+ *   exerciseType: 'multipleChoice',
+ *   instructions: 'Choose the correct option.',
+ *   answers: {
+ *     options: ['Option 1', 'Option 2', 'Option 3'],
+ *     answer: 'Option 1'
+ *   }
+ * };
+ * const handleSubmit = () => console.log('Exercise submitted');
+ * return <ExerciseView exercise={exercise} onSubmit={handleSubmit} />;
+ */
 const ExerciseView = ({exercise, onSubmit}) => {
     const [selectedOption, setSelectedOption] = useState('');
     const [answer, setAnswer] = useState('');

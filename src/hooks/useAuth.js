@@ -9,10 +9,11 @@ export const useAuth = () => {
         } else {
             localStorage.removeItem('auth')
         }
+        setAuth(auth);
     }
     const clearAuth = () => {
         setAuth({ isAuthenticated: false, user:null, token:null })
-        setStoredAuth(null)
+        localStorage.removeItem('auth');
     }
     return {setStoredAuth, clearAuth};
 }

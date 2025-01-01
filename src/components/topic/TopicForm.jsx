@@ -5,6 +5,7 @@ import { topicService } from '../../services/topicService';
 import { exerciseService } from '../../services/exerciseService';
 import Loading from '../reusable/Loading';
 import { useAuth } from '../../hooks/useAuth';
+import ErrorBoundary from '../boundary/ErrorBoundary';
 
 const TopicForm = () => {
     const { courseId, topicId } = useParams();
@@ -62,10 +63,23 @@ const TopicForm = () => {
 
     const handleExerciseChange = async (e) => {
         const selectedExerciseId = e.target.value;
-        setExerciseIds((prevExerciseIds) =>
-            prevExerciseIds.includes(selectedExerciseId)
-                ? prevExerciseIds.filter((id) => id !== selectedExerciseId)
-                : [...prevExerciseIds, selectedExerciseId]
+        setExerciseIds((prevExerciseIds) =>{
+                try{
+                    if (!prevExerciseIds) 
+                        return [selectedExerciseId]
+                    return prevExerciseIds?.includes(selectedExerciseId)
+                        ? prevExerciseIds.filter((id) => id !== selectedExerciseId)
+                        : [prevExerciseIds && [...prevExerciseIds], selectedExerciseId]
+                } catch(err){
+                    toast({
+                        title: "Error",
+                        description: err.response?.data?.message || "Failed to add exercise",
+                        status: "error",
+                        duration: 5000,
+                        isClosable: true
+                    });
+                }
+            }
         );
     };
 
@@ -116,42 +130,43 @@ const TopicForm = () => {
     }
 
     return (
-        <Flex direction="column" p="4">
-            <Heading as="h2" size="xl" mb="6">{topicId ? "Edit Topic" : "Create Topic"}</Heading>
-            <Box as="form" onSubmit={handleSubmit}>
-                <Input
-                    placeholder="Name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    mb="4"
-                    required
-                />
-                <Textarea
-                    placeholder="Description"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    mb="4"
-                />
-                <Textarea
-                    placeholder="Contents"
-                    value={contents}
-                    onChange={(e) => setContents(e.target.value)}
-                    mb="4"
-                />
-                <Select placeholder="Add exercises?" onChange={handleExerciseChange} mb="4" variant={'flushed'}>
-                    {exercises.map((exercise) => (
-                        <option key={exercise.id} value={exercise.id}>
-                            {exercise.name}
-                        </option>
-                    ))}
-                </Select>
-                <Button type="submit" colorScheme="blue" isLoading={loading}>
-                    {topicId ? "Update Topic" : "Create Topic"}
-                </Button>
-            </Box>
-        </Flex>
+        <ErrorBoundary>
+            <Flex direction="column" p="4">
+                <Heading as="h2" size="xl" mb="6">{topicId ? "Edit Topic" : "Create Topic"}</Heading>
+                <Box as="form" onSubmit={handleSubmit}>
+                    <Input
+                        placeholder="Name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        mb="4"
+                        required
+                    />
+                    <Textarea
+                        placeholder="Description"
+                        value={description||""}
+                        onChange={(e) => setDescription(e.target.value)}
+                        mb="4"
+                    />
+                    <Textarea
+                        placeholder="Contents"
+                        value={contents||""}
+                        onChange={(e) => setContents(e.target.value)}
+                        mb="4"
+                    />
+                    <Select placeholder="Add exercises?" onChange={handleExerciseChange} mb="4" variant={'flushed'}>
+                        {exercises.map((exercise) => (
+                            <option key={exercise.id} value={exercise.id}>
+                                {exercise.name}
+                            </option>
+                        ))}
+                    </Select>
+                    <Button type="submit" colorScheme="blue" isLoading={loading}>
+                        {topicId ? "Update Topic" : "Create Topic"}
+                    </Button>
+                </Box>
+            </Flex>
+        </ErrorBoundary>
     );
 };
 
 export default TopicForm;
-    
