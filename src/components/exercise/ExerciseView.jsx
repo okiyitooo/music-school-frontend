@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Heading, Text, Flex, Button, useToast } from '@chakra-ui/react';
+import { Box, Text, Flex, Button, useToast } from '@chakra-ui/react';
 import MultipleChoiceComponent from './question/MultipleChoiceComponent';
 import FillInTheBlankComponent from './question/FillInTheBlankComponent';
 import ShortAnswerComponent from './question/ShortAnswerComponent';
