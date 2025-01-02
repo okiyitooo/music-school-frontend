@@ -39,22 +39,18 @@ const UserList = () => {
                     <Button> Create User</Button>
                 </Link>
             </Flex>
-            {users.length === 0 ? (
-                <Text>There are no users at the moment</Text>
-            ) : (
-                <Stack spacing={4}>
-                    {users.map((user) => (
-                        <Card key={user.userId} title={user.username}>
-                            <Text mb={2}>
-                                {user.email || "No Email"}
-                            </Text>
-                            <Link to={`/users/${user.userId}`}>
-                                <Button>View User</Button>
-                            </Link>
-                        </Card>
-                    ))}
-                </Stack>
-            )}
+            <Stack spacing={4}>
+                {users.map((user) => (
+                    <Card key={user.userId} title={user.username}>
+                        <Text mb={2}>
+                            {user.email || "No Email"}
+                        </Text>
+                        <Link to={`/users/${user.userId}`}>
+                            <Button>View User</Button>
+                        </Link>
+                    </Card>
+                ))}
+            </Stack>
         </Flex>
     );
 };

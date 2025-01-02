@@ -18,7 +18,7 @@ const CourseForm = () => {
     const [prerequisites, setPrerequisites] = useState([]);// prerequisite: courseIds
 
     const [difficultyLevel, setDifficultyLevel] = useState('');
-    const [instructorIds, setInstructorIds] = useState('');
+    const [instructorIds, setInstructorIds] = useState([]);
     const [availableInstructors, setAvailableInstructors] = useState([]);
     const [loading, setLoading] = useState(false);
     const toast = useToast();
@@ -60,7 +60,7 @@ const CourseForm = () => {
                         setCategories(course.categories?.join(',') || '')
                         setPrerequisites(course.prerequisites?.join('') || '')
                         setDifficultyLevel(course.difficultyLevel || '')
-                        setInstructorIds(course.instructorIds?.join(',') || '')
+                        setInstructorIds(course.instructorIds || []);
                     }
                 } catch (err) {
                     toast({
@@ -106,32 +106,31 @@ const CourseForm = () => {
         }
     }
     const handleInstructorChange = async() => {
-        if (instructorIds?.includes(auth.user.userId)){
-            setInstructorIds(instructorIds.split(',')
-                .filter(id => id !== auth.user.userId).join(','))
+        if (instructorIds.includes(auth.user.userId)){
+            setInstructorIds(instructorIds.filter(id => id !== auth.user.userId));
         } else {
-            setInstructorIds([...instructorIds.split(',')
-                .filter(id=> id.trim()!==""), auth.user.userId].join(','))
+            setInstructorIds([...instructorIds, auth.user.userId]);
         }
     }
     const handleAdminInstructorChange = async (e) => {
-        e.preventDefault()
-        if (instructorIds?.includes(e.target?.value)){
-            setInstructorIds(instructorIds?.split(',').filter(id=> id!==e.target.value).join(','))
+        e.preventDefault();
+        if (instructorIds.includes(e.target.value)){
+            setInstructorIds(instructorIds.filter(id => id !== e.target.value));
         } else {
-            setInstructorIds([...instructorIds?.split(',').filter(id => id.trim()!=="" ),e.target.value].join(','))
+            setInstructorIds([...instructorIds, e.target.value]);
         }
     }
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
+        console.log("prerequisites",prerequisites)
         const courseData = {
             name,
             description,
             categories: categories.split(',').map(cat=>cat.trim()),
-            prerequisites: prerequisites.split(',').map(prereq=>prereq.trim()),
+            prerequisites: prerequisites ? prerequisites.map(prereq=>prereq.trim()) : [],
             difficultyLevel,
-            instructorIds: instructorIds.split(',').map(id=>id.trim())
+            instructorIds
         };
         try {
             if (courseId){
@@ -190,7 +189,7 @@ const CourseForm = () => {
                         <FormControl mb="4">
                             <FormLabel htmlFor="description">Description</FormLabel>
                             <Textarea id="description" value={description} 
-                                    onChange={(e) => setDescription(e.target.value)}
+                                    onChange={(e) => setDescription(e.target.value)} isRequired={true}
                             />
                         </FormControl>
                         <FormControl mb="4">
@@ -204,7 +203,7 @@ const CourseForm = () => {
                         <FormControl mb="4">
                             <FormLabel htmlFor="prerequisites">Prerequisites:</FormLabel>
                             <Select variant="outline" id="prerequisites" placeholder=" "
-                                    value={"prerequisites"}
+                                    value={""}
                                     onChange={handlePrerequisiteChange}
                                 >
                                     {courses.map((course) => (
@@ -218,7 +217,7 @@ const CourseForm = () => {
                             <FormLabel htmlFor="difficultyLevel">Difficulty Level</FormLabel>
                             <Select id="difficultyLevel" value={difficultyLevel} 
                                     onChange={(e) => setDifficultyLevel(e.target.value)}
-                                    placeholder="Select difficulty">
+                                    placeholder="Select difficulty" isRequired={true}>
                                     {difficultyOptions.map(option =>
                                         <option value={option} key={option}>{option}</option>
                                     )}
@@ -230,7 +229,7 @@ const CourseForm = () => {
                             (<FormControl>
                                 <FormLabel htmlFor="instructorIds">Instructors:</FormLabel>
                                 <Select variant="flushed" id="instructorIds" placeholder=" "
-                                    value={"instructorIds"}
+                                    value={""}
                                     onChange={handleAdminInstructorChange}
                                 >
                                     {availableInstructors.map((instructor) => (
@@ -244,9 +243,9 @@ const CourseForm = () => {
                             </FormControl>)
                                 :
                             (<FormControl>
-                                <FormLabel htmlFor="instructorIds">{instructorIds?.includes(auth?.user?.userId)?"Drop":"Add"}</FormLabel>
-                                <Button onClick={handleInstructorChange} colorScheme={instructorIds?.includes(auth?.user?.userId) ? "maroon" : "lime"}>
-                                    {instructorIds?.includes(auth?.user?.userId) ? "Drop" : "Add"}
+                                <FormLabel htmlFor="instructorIds">{instructorIds.includes(auth?.user?.userId)?"Drop":"Add"}</FormLabel>
+                                <Button onClick={handleInstructorChange} bg={instructorIds.includes(auth?.user?.userId) ? "maroon" : "lime"}>
+                                    {instructorIds.includes(auth?.user?.userId) ? "Drop" : "Add"}
                                 </Button>
                             </FormControl>)
                         }

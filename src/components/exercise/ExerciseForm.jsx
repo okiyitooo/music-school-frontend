@@ -76,12 +76,14 @@ const ExerciseForm = () => {
                         name="name"
                         value={exercise.name}
                         onChange={handleChange}
+                        required={true}
                     />
                     <Input
                         placeholder="Description"
                         name="description"
                         value={exercise.description}
                         onChange={handleChange}
+                        isRequired={true}
                     />
                     <Input
                         placeholder="Instructions"
@@ -94,6 +96,8 @@ const ExerciseForm = () => {
                         name="exerciseType"
                         value={exercise.exerciseType}
                         onChange={handleChange}
+                        isRequired={true}
+                        aria-required={true}
                     >
                         <option value="multipleChoice">Multiple Choice</option>
                         <option value="fillInTheBlank">Fill in the Blank</option>
