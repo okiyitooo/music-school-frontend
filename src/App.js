@@ -29,7 +29,7 @@ function App() {
           <ErrorBoundary>
             <AppRoutes />
           </ErrorBoundary>
-          <Footer />
+          <Footer/>
         </div>
       </AuthContext.Provider>
     </ChakraProvider>

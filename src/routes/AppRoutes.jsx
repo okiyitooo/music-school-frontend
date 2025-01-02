@@ -8,11 +8,10 @@ import TopicList from '../components/topic/TopicList';
 import TopicDetail from '../components/topic/TopicDetail';
 import ExerciseList from '../components/exercise/ExerciseList';
 import ExerciseDetail from '../components/exercise/ExerciseDetail';
-// import UserProfile from '../components/user/UserProfile';
-// import UserList from '../components/user/UserList';
+import UserProfile from '../components/user/UserProfile';
+import UserList from '../components/user/UserList';
 import Header from '../components/layout/Header';
 import Sidebar from '../components/layout/Sidebar';
-import Footer from '../components/layout/Footer';
 import { Flex } from '@chakra-ui/react';
 import Loading from '../components/reusable/Loading'
 import { AuthContext } from '../context/AuthContext';
@@ -78,7 +77,7 @@ const AppRoutes = () => {
             <Header />
             <Flex>
                 <Sidebar />
-                <Flex flex="1" p="4" height="100vh">
+                <Flex flex="1" p="4" height="100vh" overflow={'auto'} sx={{scrollbarWidth: 'none', msOverflowStyle: 'none', '&::-webkit-scrollbar': {display: 'none'}}}>
                     <Routes>
                         <Route path="/" element={<PrivateRoute><Flex>Home Page</Flex></PrivateRoute>} />
                         <Route path="/login" element={<Login />} />
@@ -95,15 +94,15 @@ const AppRoutes = () => {
                         <Route path="/courses/:courseId/topics/:topicId/exercises/:exerciseId" element={<PrivateRoute><ExerciseDetail /></PrivateRoute>} />
                         <Route path="/courses/:courseId/topics/:topicId/exercises/create" element={<PrivateRoute><InstructorRoute><ExerciseForm /></InstructorRoute></PrivateRoute>} />
                         <Route path="/courses/:courseId/topics/:topicId/exercises/:exerciseId/edit" element={<PrivateRoute><InstructorRoute><ExerciseForm /></InstructorRoute></PrivateRoute>} />
-                        {/* 
-                        <Route path="/profile" element={<PrivateRoute><UserProfile /></PrivateRoute>} />
+                        <Route path="/profile" element={<PrivateRoute><UserProfile /></PrivateRoute>}/>
+                        <Route path="/users/:userId" element={<PrivateRoute><UserProfile /></PrivateRoute>}/>
                         <Route path="/users" element={<PrivateRoute><AdminRoute><UserList /></AdminRoute></PrivateRoute>} />
+                        {/* 
                         <Route path="/users/create" element={<PrivateRoute><AdminRoute><UserForm /></AdminRoute></PrivateRoute>} />
                         <Route path="/users/:userId/edit" element={<PrivateRoute><AdminRoute><UserForm /></AdminRoute></PrivateRoute>} /> */}
                     </Routes>
                 </Flex>
             </Flex>
-            <Footer />
         </BrowserRouter>
     )
 }

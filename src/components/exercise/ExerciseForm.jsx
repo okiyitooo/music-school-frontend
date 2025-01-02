@@ -133,7 +133,7 @@ const ExerciseForm = () => {
                     )}
                     <HStack justifyContent="space-evenly">
                         <Button onClick={() => navigate(`/courses/${courseId}/topics/${topicId}/exercises`)} children={"back"} colorScheme='teal'/>
-                        <Button onClick={handleSubmit} colorScheme="teal" type="submit">
+                        <Button onClick={handleSubmit} colorScheme="green" type="submit">
                             {(exerciseId ? "Update": "Create") + " Exercise"}
                         </Button>
                     </HStack>
