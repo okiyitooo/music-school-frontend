@@ -1,4 +1,4 @@
-import { Heading, Flex, Text, Stack, useToast, HStack, Box } from '@chakra-ui/react';
+import { Heading, Flex, Text, Stack, useToast, HStack, } from '@chakra-ui/react';
 import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { exerciseService } from '../../services/exerciseService';
