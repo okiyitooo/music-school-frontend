@@ -1,4 +1,4 @@
-import { Heading, Flex, Text, Stack, useToast } from '@chakra-ui/react';
+import { Heading, Flex, Text, Stack, useToast, HStack, Box } from '@chakra-ui/react';
 import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { exerciseService } from '../../services/exerciseService';
@@ -16,10 +16,8 @@ const ExerciseList = () => {
     useEffect(() => {
         const fetchExercises = async () => {
             try {
-                let response;
-                if (topicId) {
-                    response = await exerciseService.getAllExercisesByTopicId(topicId);
-                }
+                const response = await exerciseService.getAllExercisesByTopicId(topicId);
+                console.log(response.data)
                 setExercises(response.data);
             } catch (err) {
                 toast({
@@ -29,7 +27,7 @@ const ExerciseList = () => {
                     duration: 5000,
                     isClosable: true
                 });
-                navigate(`/courses/${courseId}/topics`);
+                navigate(`/courses/${courseId}/topics/${topicId}`);
             }
             setLoading(false);
         };
@@ -41,11 +39,14 @@ const ExerciseList = () => {
     return (
         <Flex direction="column" p="4">
             <Heading as={"h2"} size="xl" mb="6">Exercises</Heading>
-            <Flex justify={"flex-end"} mb={4}>
-                <Link to={`/courses/${courseId}/exercises/create`}>
+            <HStack display={"flex"} justifyContent={"space-between"} mb={4}>
+                <Link to={`/courses/${courseId}/topics/${topicId}`}>
+                    <Button > Back</Button>
+                </Link>
+                <Link to={`/courses/${courseId}/topics/${topicId}/exercises/create`}>
                     <Button> Create Exercise</Button>
                 </Link>
-            </Flex>
+            </HStack>
             {exercises.length === 0 ? (
                 <Text>There are no exercises at the moment</Text>
             ) : (
@@ -55,7 +56,7 @@ const ExerciseList = () => {
                             <Text mb={2}>
                                 {exercise.description || "No Description"}
                             </Text>
-                            <Link to={`/courses/${courseId}/exercises/${exercise.exerciseId}`}>
+                            <Link to={`/courses/${courseId}/topics/${topicId}/exercises/${exercise.exerciseId}`}>
                                 <Button>View Exercise</Button>
                             </Link>
                         </Card>

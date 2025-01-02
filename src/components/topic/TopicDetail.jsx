@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Heading, Text, Flex, Box, Button, useToast, HStack } from '@chakra-ui/react';
 import { topicService } from '../../services/topicService';
-import { exerciseService } from '../../services/exerciseService';
 
 import Loading from '../reusable/Loading';
 import Card from '../reusable/Card';
@@ -15,7 +14,6 @@ const TopicDetail = () => {
     const navigate = useNavigate();
 
     const { auth } = useContext(AuthContext);
-    const [exercises, setExercises] = useState([])
     const roles = auth?.user?.roles;
 
     useEffect(() => {
@@ -35,24 +33,7 @@ const TopicDetail = () => {
             }
             setLoading(false);
         };
-        const fetchTopicExercises = async () => {
-            try {
-                const response = await exerciseService.getAllExercises();
-                const topicExercises = response.data.filter(exercise=> exercise.topicId===topicId)
-                setExercises(topicExercises);
-            } catch (err){
-                toast({
-                    title: "Error",
-                    description: err.response?.data?.message || "Failed to fetch topic's exercises.",
-                    status: 'error',
-                    duration: 5000,
-                    isClosable: true
-                })
-            }
-            setLoading(false);
-        }
         fetchTopic();
-        fetchTopicExercises();
     }, [topicId, toast, navigate, courseId]);
 
     if (loading) {
@@ -70,18 +51,16 @@ const TopicDetail = () => {
                 <Box>
                     <Text mb="4">{topic.description || "No Description"}</Text>
                     <Text>{topic.contents || ""}</Text>
-                    {exercises.length!==0 &&
-                    <Text><strong>Exercises:</strong> {exercises.map(exercise=>exercise.name).join('\n')+"."}</Text>}
                 </Box>
                 <Flex justify="space-between" mt={4}>
                     <HStack>
-                        <Button as={Link} colorScheme='green' to={`exercises`}>
+                        <Button as={Link} colorScheme='green' to={`/courses/${courseId}/topics/${topicId}/exercises`}>
                             View Exercises
                         </Button>
                         {
                             (roles?.includes("ADMIN") || roles?.includes("INSTRUCTOR"))
                                 &&
-                            <Link to={`edit`}>
+                            <Link to={`/courses/${courseId}/topics/${topicId}/edit`}>
                                 <Button>Edit Topic</Button>
                             </Link>
                         }

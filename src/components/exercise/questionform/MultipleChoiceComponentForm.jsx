@@ -21,7 +21,7 @@
  * <MultipleChoiceComponentForm answers={answers} onAnswerChange={handleAnswerChange} />
  */
 import React, { useState } from 'react';
-import { Box, Button, flexbox, Input, Select, Stack, Text } from '@chakra-ui/react';
+import { Box, Button, Input, Select, Stack, Text } from '@chakra-ui/react';
 
 const MultipleChoiceComponentForm = ({ answers, onAnswerChange }) => {
     const [options, setOptions] = useState(answers?.options || []);
@@ -29,8 +29,9 @@ const MultipleChoiceComponentForm = ({ answers, onAnswerChange }) => {
     const [answer, setAnswer] = useState(answers?.answer || '');
 
     const handleCorrectAnswerChange = async (e) => {
+        if (e.target.value.trim() === '') return;
         setAnswer(e.target.value)
-        onAnswerChange({...answers, answer})
+        await onAnswerChange({...answers, answer:e.target.value})
     }
 
     const handleAddOption = () => {
@@ -75,6 +76,7 @@ const MultipleChoiceComponentForm = ({ answers, onAnswerChange }) => {
                 <Box display={'flex'} >
                     <Text>Correct answer: </Text>
                     <Select value={answer} onChange={handleCorrectAnswerChange}>
+                        <option value="">Select correct answer</option>
                         {options.map(option=>
                             <option key={option} value={option}>{option}</option>
                             )

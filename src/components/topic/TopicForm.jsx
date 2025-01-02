@@ -69,7 +69,7 @@ const TopicForm = () => {
                         return [selectedExerciseId]
                     return prevExerciseIds?.includes(selectedExerciseId)
                         ? prevExerciseIds.filter((id) => id !== selectedExerciseId)
-                        : [prevExerciseIds && [...prevExerciseIds], selectedExerciseId]
+                        : [...prevExerciseIds, selectedExerciseId]
                 } catch(err){
                     toast({
                         title: "Error",
@@ -153,9 +153,9 @@ const TopicForm = () => {
                         onChange={(e) => setContents(e.target.value)}
                         mb="4"
                     />
-                    <Select placeholder="Add exercises?" onChange={handleExerciseChange} mb="4" variant={'flushed'}>
+                    <Select placeholder="Add exercise: " onChange={handleExerciseChange} mb="4" variant={'flushed'}>
                         {exercises.map((exercise) => (
-                            <option key={exercise.id} value={exercise.id}>
+                            <option style={{backgroundColor: exerciseIds?.includes(exercise.id)?'#4FFFB0' /** brightmint */:'white' }}key={exercise.id} value={exercise.id}>
                                 {exercise.name}
                             </option>
                         ))}

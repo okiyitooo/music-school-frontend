@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Box, Button, Input, Select, Stack, Text } from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react';
+import { Box, Button, HStack, Input, Select, Stack, Text, useToast } from '@chakra-ui/react';
 import MultipleChoiceComponentForm from './questionform/MultipleChoiceComponentForm';
 import FillInTheBlankComponentForm from './questionform/FillInTheBlankComponentForm';
 import ShortAnswerComponentForm from './questionform/ShortAnswerComponentForm';
@@ -8,6 +8,7 @@ import TrueFalseComponentForm from './questionform/TrueFalseComponentForm';
 import { exerciseService } from '../../services/exerciseService';
 import { useNavigate, useParams } from 'react-router-dom';
 import ErrorBoundary from '../boundary/ErrorBoundary';
+import Loading from '../reusable/Loading';
 
 const ExerciseForm = () => {
     const [exercise, setExercise] = useState({
@@ -17,31 +18,58 @@ const ExerciseForm = () => {
         exerciseType: '',
         answers: {}
     });
-    const { courseId } = useParams();
+    const [loading, setLoading] = useState(true);
+    const { courseId, exerciseId, topicId } = useParams();
     const navigate = useNavigate();
-
+    const toast = useToast();
+    useEffect(() => {
+        const fetchExercise = async () => {
+            if (exerciseId) {
+                try {
+                    const response = await exerciseService.getExerciseById(exerciseId);
+                    setExercise(response.data);
+                } catch (err) {
+                    toast ({
+                        title: "Error loading exercise",
+                        description: err.response?.data?.message || err.data?.message || "Failed to fetch exercise.",
+                        status: "error",
+                        isClosable: true,
+                    })
+                }
+                setLoading(false);
+            }
+        }
+        fetchExercise();
+    }, [exerciseId, toast])
     const handleChange = (e) => {
         const { name, value } = e.target;
         setExercise({ ...exercise, [name]: value });
     };
 
-    const handleAnswerChange = (answers) => {
+    const handleAnswerChange = async (answers) => {
         setExercise({ ...exercise, answers });
     };
 
     const handleSubmit = async () => {
         try {
-            await exerciseService.createExercise({ ...exercise, courseId });
-            navigate(`/courses/${courseId}/exercises`);
+            let response;
+            if (exerciseId===undefined) 
+                response =await exerciseService.createExercise({ ...exercise, topicId });
+            else 
+                response =await exerciseService.updateExercise(exerciseId, exercise, );
+            console.log(response)
+            navigate(`/courses/${courseId}/topics/${topicId}/exercises`);
         } catch (err) {
             console.error('Failed to create exercise', err);
         }
     };
 
+    if (loading)
+        return <Loading message="Loading exercise details.."/>;
     return (
         <ErrorBoundary>
             <Box p={4} borderWidth={1} borderRadius="md">
-                <Stack spacing={4}>
+                <Stack spacing={4} onSubmit={handleSubmit}>
                     <Text fontSize="xl">Create New Exercise</Text>
                     <Input
                         placeholder="Name"
@@ -103,9 +131,12 @@ const ExerciseForm = () => {
                             onAnswerChange={handleAnswerChange}
                         />
                     )}
-                    <Button onClick={handleSubmit} colorScheme="blue">
-                        Create Exercise
-                    </Button>
+                    <HStack justifyContent="space-evenly">
+                        <Button onClick={() => navigate(`/courses/${courseId}/topics/${topicId}/exercises`)} children={"back"} colorScheme='teal'/>
+                        <Button onClick={handleSubmit} colorScheme="teal" type="submit">
+                            {(exerciseId ? "Update": "Create") + " Exercise"}
+                        </Button>
+                    </HStack>
                 </Stack>
             </Box>
         </ErrorBoundary>

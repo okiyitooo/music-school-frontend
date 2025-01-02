@@ -46,6 +46,7 @@ const ExerciseView = ({exercise, onSubmit}) => {
         setSelectedPairs(newPairs);
     };
     const complete = async (answerIsCorrect, badDescription, multipleAnswers) => {
+        console.log("answerIsCorrect",answerIsCorrect)
         if (answerIsCorrect){
             setCompleted(true);
             toast({
@@ -63,11 +64,12 @@ const ExerciseView = ({exercise, onSubmit}) => {
         }
     }
     const handleSubmit = async () => {
+        console.log(exercise, selectedOption, exercise.answers.answer===selectedOption)
         if (exercise.exerciseType === 'multipleChoice') { 
             await complete(selectedOption===exercise.answers?.answer);
         } 
         if (exercise.exerciseType === 'fillInTheBlank' ) {
-            complete(answer===exercise.answers?.answer)
+            complete(answer.toLowerCase()===exercise.answers?.answer.toLowerCase())
         }
         if (exercise.exerciseType === 'shortAnswer' ) {
             toast({
@@ -78,7 +80,7 @@ const ExerciseView = ({exercise, onSubmit}) => {
             setCompleted(true);
         }
         if (exercise.exerciseType === 'trueFalse') {
-            complete(selectedOption === exercise.answer?.answer);
+            complete(selectedOption === exercise.answers?.answer);
         }
         if (exercise.exerciseType === 'matching') {
             let failingPair;
@@ -97,7 +99,7 @@ const ExerciseView = ({exercise, onSubmit}) => {
     if (completed) return (
         <Flex direction="column" align="center" justify="center" p="4">
             <Text fontSize="xl" mb="4">Exercise Completed!!!</Text>
-            <Button onClick={onSubmit} colorScheme="blue">Back to course</Button>
+            <Button onClick={onSubmit} colorScheme="blue">Back to exercises</Button>
         </Flex>
     );
 
@@ -105,13 +107,12 @@ const ExerciseView = ({exercise, onSubmit}) => {
 
     return (
         <Flex direction="column" p="4">
-            <Heading as="h2" size="xl" mb="6">{exercise.name}</Heading>
             <Box>
                 <Text mb="4">{exercise.description || ""}</Text>
-                {exercise.exerciseType === 'multipleChoice' && exercise.answers (
+                {(exercise.exerciseType === 'multipleChoice' && exercise.answers) && (
                     <MultipleChoiceComponent
-                        question={exercise.instructions}
-                        options={exercise.answers.options}
+                        question={exercise.answers?.question || "Choose correctly"}
+                        options={exercise.answers?.options}
                         selectedOption={selectedOption}
                         onChange={handleOptionChange}
                         onsubmit={handleSubmit}
@@ -119,7 +120,7 @@ const ExerciseView = ({exercise, onSubmit}) => {
                 )}
                 {exercise.exerciseType === 'fillInTheBlank' && (
                     <FillInTheBlankComponent
-                        question={exercise.instructions}
+                        question={exercise.answers?.question || "Fill in the blank"}
                         answer={answer}
                         onChange={handleAnswerChange}
                         onSubmit={handleSubmit}
@@ -127,7 +128,7 @@ const ExerciseView = ({exercise, onSubmit}) => {
                 )}
                 {exercise.exerciseType === 'shortAnswer' && (
                     <ShortAnswerComponent
-                        question={exercise.instructions}
+                        question={exercise.answers?.question}
                         answer={answer}
                         onChange={handleAnswerChange}
                         onSubmit={handleSubmit}
@@ -135,7 +136,7 @@ const ExerciseView = ({exercise, onSubmit}) => {
                 )}
                 {exercise.exerciseType === 'matching' && exercise.answers && (
                     <MatchingComponent
-                        question={exercise.instructions || null}
+                        question={exercise.answers?.question || "Match the following"}
                         pairs={exercise.answers.pairs}
                         selectedPairs={selectedPairs}
                         onChange={handlePairChange}
@@ -144,7 +145,7 @@ const ExerciseView = ({exercise, onSubmit}) => {
                 )}
                 {exercise.exerciseType === 'trueFalse' && (
                     <TrueFalseComponent
-                        question={exercise.instructions}
+                        question={exercise.answers?.question || "True or False"}
                         selectedOption={selectedOption}
                         onChange={handleOptionChange}
                         onSubmit={handleSubmit}

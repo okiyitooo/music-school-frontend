@@ -23,7 +23,7 @@ const MatchingComponent = ({ question, pairs, selectedPairs, onChange, onSubmit 
                     </Flex>
                 ))}
             </Stack>
-            <Button onClick={onSubmit} colorScheme='aquamarine' mt={4}>Submit</Button>
+            <Button onClick={onSubmit} colorScheme='orange' mt={4}>Submit</Button>
         </Flex>
     );
 };

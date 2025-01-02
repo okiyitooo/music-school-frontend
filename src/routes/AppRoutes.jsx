@@ -92,10 +92,9 @@ const AppRoutes = () => {
                         <Route path="/courses/:courseId/topics/create" element={<PrivateRoute><InstructorRoute><TopicForm /></InstructorRoute></PrivateRoute>} />
                         <Route path="/courses/:courseId/topics/:topicId/edit" element={<PrivateRoute><InstructorRoute><TopicForm /></InstructorRoute></PrivateRoute>} />
                         <Route path="/courses/:courseId/topics/:topicId/exercises" element={<PrivateRoute><ExerciseList /></PrivateRoute>} />
-                        <Route path="/courses/:courseId/exercises" element={<PrivateRoute><ExerciseList /></PrivateRoute>} />
-                        <Route path="/courses/:courseId/exercises/:exerciseId" element={<PrivateRoute><ExerciseDetail /></PrivateRoute>} />
-                        <Route path="/courses/:courseId/exercises/create" element={<PrivateRoute><InstructorRoute><ExerciseForm /></InstructorRoute></PrivateRoute>} />
-                        <Route path="/courses/:courseId/exercises/:exerciseId/edit" element={<PrivateRoute><InstructorRoute><ExerciseForm /></InstructorRoute></PrivateRoute>} />
+                        <Route path="/courses/:courseId/topics/:topicId/exercises/:exerciseId" element={<PrivateRoute><ExerciseDetail /></PrivateRoute>} />
+                        <Route path="/courses/:courseId/topics/:topicId/exercises/create" element={<PrivateRoute><InstructorRoute><ExerciseForm /></InstructorRoute></PrivateRoute>} />
+                        <Route path="/courses/:courseId/topics/:topicId/exercises/:exerciseId/edit" element={<PrivateRoute><InstructorRoute><ExerciseForm /></InstructorRoute></PrivateRoute>} />
                         {/* 
                         <Route path="/profile" element={<PrivateRoute><UserProfile /></PrivateRoute>} />
                         <Route path="/users" element={<PrivateRoute><AdminRoute><UserList /></AdminRoute></PrivateRoute>} />
