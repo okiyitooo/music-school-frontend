@@ -20,7 +20,7 @@ import { authService } from '../services/authService.js';
 import CourseForm from '../components/course/CourseForm';
 import TopicForm from '../components/topic/TopicForm';
 import ExerciseForm from '../components/exercise/ExerciseForm';
-// import UserForm from '../components/user/UserForm';
+import UserForm from '../components/user/UserForm';
 
 const AppRoutes = () => {
     const {auth, setAuth} = useContext(AuthContext);
@@ -97,9 +97,7 @@ const AppRoutes = () => {
                         <Route path="/profile" element={<PrivateRoute><UserProfile /></PrivateRoute>}/>
                         <Route path="/users/:userId" element={<PrivateRoute><UserProfile /></PrivateRoute>}/>
                         <Route path="/users" element={<PrivateRoute><AdminRoute><UserList /></AdminRoute></PrivateRoute>} />
-                        {/* 
-                        <Route path="/users/create" element={<PrivateRoute><AdminRoute><UserForm /></AdminRoute></PrivateRoute>} />
-                        <Route path="/users/:userId/edit" element={<PrivateRoute><AdminRoute><UserForm /></AdminRoute></PrivateRoute>} /> */}
+                        <Route path="/users/:userId/edit" element={<PrivateRoute><AdminRoute><UserForm /></AdminRoute></PrivateRoute>} />
                     </Routes>
                 </Flex>
             </Flex>

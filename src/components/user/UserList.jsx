@@ -34,11 +34,6 @@ const UserList = () => {
     return (
         <Flex direction="column" p="4">
             <Heading as={"h2"} size="xl" mb="6">Users</Heading>
-            <Flex justify={"flex-end"} mb={4}>
-                <Link to="/users/create">
-                    <Button> Create User</Button>
-                </Link>
-            </Flex>
             <Stack spacing={4}>
                 {users.map((user) => (
                     <Card key={user.userId} title={user.username}>
