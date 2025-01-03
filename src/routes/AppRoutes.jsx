@@ -97,7 +97,8 @@ const AppRoutes = () => {
                         <Route path="/profile" element={<PrivateRoute><UserProfile /></PrivateRoute>}/>
                         <Route path="/users/:userId" element={<PrivateRoute><UserProfile /></PrivateRoute>}/>
                         <Route path="/users" element={<PrivateRoute><AdminRoute><UserList /></AdminRoute></PrivateRoute>} />
-                        <Route path="/users/:userId/edit" element={<PrivateRoute><AdminRoute><UserForm /></AdminRoute></PrivateRoute>} />
+                        <Route path="/users/:userId/edit" element={<PrivateRoute><UserForm /></PrivateRoute>} />
+                        <Route path="/users/me/edit" element={<PrivateRoute><UserForm /></PrivateRoute>} />
                     </Routes>
                 </Flex>
             </Flex>

@@ -69,7 +69,7 @@ const ProgressTracker = ({courseId}) => {
                 (<Text>No progress in the course</Text>)
                     :
                 (
-                <Stack>
+                <Stack> 
                     {Object.keys(enrollment.progress).map((topicId)=>{
                         <Box key={topicId} p={2} bg={enrollment.progress[topicId].completed? 'green.100' : 'red.50'}>
                             <Text><strong>Topic: </strong>{topicNameIdPair[topicId]}</Text>

@@ -18,10 +18,9 @@ const UserProfile = () => {
             try {
                 let response;
                 if (!userId)
-                    response=await userService.getUserById(auth?.user?.userId);
+                    response= {data: auth.user}
                 else 
                     response = await userService.getUserById(userId);
-                console.log(response.data)
                 setUser(response.data);
             } catch (err) {
                 toast({
@@ -95,7 +94,7 @@ const UserProfile = () => {
                 <Button as={Link} colorScheme='skyblue' to={userId ? '/users/' : "/home"}>
                     Back
                 </Button>
-                <Button as={Link} bg='skyblue.200' to={`/users/${userId || auth?.user?.userId}/edit`}>
+                <Button as={Link} bg='skyblue.200' to={`/users/${userId || 'me'}/edit`}>
                     Edit Profile
                 </Button>
             </Flex>

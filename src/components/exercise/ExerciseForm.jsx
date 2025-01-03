@@ -36,8 +36,8 @@ const ExerciseForm = () => {
                         isClosable: true,
                     })
                 }
-                setLoading(false);
             }
+            setLoading(false);
         }
         fetchExercise();
     }, [exerciseId, toast])

@@ -1,5 +1,6 @@
 import { API_BASE_URL, api as axios } from '../utils/authUtils.js';
 
+
 const API_URL = `${API_BASE_URL}/auth`
 
 const signup = async (signupData) => {
@@ -23,9 +24,14 @@ const verifyToken = async (token) => {
     })
 }
 
+const updateAccount = async (updateData) => {
+    return await axios.put(`${API_URL}/updateAccount`, updateData);
+};
+
 export const authService = {
     signup,
     login,
     logout
     , verifyToken
+    , updateAccount
 }

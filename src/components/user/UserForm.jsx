@@ -4,12 +4,15 @@ import { useToast, Button, Flex, FormControl, FormLabel, Input, Select, Stack } 
 import { userService } from '../../services/userService';
 import { AuthContext } from '../../context/AuthContext';
 import Loading from '../reusable/Loading';
+import { authService } from '../../services/authService';
+import { useAuth } from '../../hooks/useAuth';
 
 const UserForm = () => {
     const { userId } = useParams();
     const navigate = useNavigate();
     const toast = useToast();
-    const { auth } = useContext(AuthContext);
+    const { auth, setAuth, logout } = useContext(AuthContext);
+    const { setStoredAuth, clearAuth} = useAuth();
 
     const [user, setUser] = useState({
         username: '',
@@ -25,31 +28,32 @@ const UserForm = () => {
 
     useEffect(() => {
         const fetchUser = async () => {
-            if (userId) {
-                try {
+            try {
+                if (!userId){
+                    setUser(auth.user);
+                } else {
                     const response = await userService.getUserById(userId);
                     setUser(response.data);
-                } catch (err) {
-                    toast({
-                        title: "Error",
-                        description: err.response?.data?.message || err.response?.data || "Failed to fetch user",
-                        status: "error",
-                        duration: 5000,
-                        isClosable: true
-                    });
                 }
+            } catch (err) {
+                toast({
+                    title: "Error",
+                    description: err.response?.data?.message || err.response?.data || "Failed to fetch user",
+                    status: "error",
+                    duration: 5000,
+                    isClosable: true
+                });
             }
             setLoading(false);
         };
 
         const fetchRoles = async () => {
-            // Assuming roles are predefined and fetched from a service or context
-            setAvailableRoles(['USER', 'INSTRUCTOR', 'ADMIN']);
+            setAvailableRoles(['STUDENT', 'INSTRUCTOR', 'ADMIN']);
         };
 
         fetchUser();
         fetchRoles();
-    }, [userId, toast]);
+    }, [userId, toast, auth]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -77,7 +81,13 @@ const UserForm = () => {
         e.preventDefault();
         setLoading(true);
         try {
-            await userService.updateUser(userId || auth?.user?.userId, user);
+            if (userId)
+                await userService.updateUser(userId, user);
+            else {
+                const userResponse = await authService.updateAccount(user);
+                setAuth({...auth, user: userResponse.data})
+                setStoredAuth({...auth, user: userResponse.data})
+            }
             toast({
                 title: "Success",
                 description: "User updated successfully",
@@ -85,7 +95,7 @@ const UserForm = () => {
                 duration: 5000,
                 isClosable: true
             });
-            navigate('/users');
+            navigate(userId?'/users':'/profile');
         } catch (err) {
             toast({
                 title: "Error",
@@ -94,6 +104,11 @@ const UserForm = () => {
                 duration: 5000,
                 isClosable: true
             });
+            if (err.response?.status===401){
+                logout();
+                clearAuth();
+                navigate('/login')
+            }
         }
         setLoading(false);
     };
@@ -184,7 +199,7 @@ const UserForm = () => {
                         </Select>
                     </FormControl>
                     <Button type="submit" colorScheme="blue">
-                        {'Update User'}
+                        {'Update'}
                     </Button>
                 </Stack>
             </form>
