@@ -30,6 +30,10 @@ const deleteMessageForUser = async (messageId, userId) => {
     return await axios.delete(`${API_URL}/${messageId}/${userId}`);
 };
 
+const searchUsersByUserName = async (userName) => {
+    return await axios.get(`${API_URL}/users/${userName}`);
+}
+
 export const messageService = {
     createMessage,
     getAllMessages,
@@ -37,5 +41,6 @@ export const messageService = {
     getMessagesBySenderId,
     getMessagesByReceiverId,
     redactMessage,
-    deleteMessageForUser
+    deleteMessageForUser,
+    searchUsersByUserName
 };

@@ -66,6 +66,7 @@ const Login = () => {
                             <Input
                                 type="password" id="password" value={password}
                                 onChange={(e) => setPassword(e.target.value)} required
+                                autoComplete='current-password'
                             />
                         </FormControl>
                         <Button type="submit" colorScheme='blue' width="100%">Login</Button>
