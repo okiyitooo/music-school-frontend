@@ -42,7 +42,6 @@ const ExerciseDetail = () => {
     const handleDelete = async () => {
         try {
             const response = await exerciseService.deleteExercise(exerciseId)
-            console.log(response)
             navigate(`/courses/${courseId}/topics/${topicId}/exercises`)
         } catch (err) {
             toast({
@@ -89,7 +88,7 @@ const ExerciseDetail = () => {
                         }
                     </Flex>
                 }
-                <ExerciseView exercise={exercise} onSubmit={handleSubmit} />
+                <ExerciseView courseId={courseId} topicId={topicId} exercise={exercise} onSubmit={handleSubmit} />
                 <Flex justify="space-between" mt={4}>
                     <Button as={Link} colorScheme='cyan' to={`/courses/${courseId}/topics/${topicId}/exercises`}>
                         Back

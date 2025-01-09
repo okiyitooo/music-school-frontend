@@ -1,5 +1,5 @@
 import React, { useState, useEffect,  } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Heading, Flex, Box, Button, Input, Textarea, useToast, Select } from '@chakra-ui/react';
 import { topicService } from '../../services/topicService';
 import { exerciseService } from '../../services/exerciseService';
@@ -160,6 +160,9 @@ const TopicForm = () => {
                             </option>
                         ))}
                     </Select>
+                    <Link to={`/courses/${courseId}/topics${topicId?`/${topicId}`:''}`}>
+                        <Button>Back</Button>
+                    </Link>
                     <Button type="submit" colorScheme="blue" isLoading={loading}>
                         {topicId ? "Update Topic" : "Create Topic"}
                     </Button>

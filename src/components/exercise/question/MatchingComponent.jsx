@@ -14,8 +14,8 @@ const MatchingComponent = ({ question, pairs, selectedPairs, onChange, onSubmit 
                             value={selectedPairs[key] || ''} 
                             onChange={(e) => onChange(key, e.target.value)}
                         >
-                            {Object.values(pairs).map((value) => (
-                                <option key={value} value={value}>
+                            {Object.values(pairs).map((value, index) => (
+                                <option key={index} value={value}>
                                     {value}
                                 </option>
                             ))}

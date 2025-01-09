@@ -79,15 +79,15 @@ const AppRoutes = () => {
                 <Sidebar />
                 <Flex flex="1" p="4" height="100vh" overflow={'auto'} sx={{scrollbarWidth: 'none', msOverflowStyle: 'none', '&::-webkit-scrollbar': {display: 'none'}}}>
                     <Routes>
-                        <Route path="/" element={<PrivateRoute><Flex>Home Page</Flex></PrivateRoute>} />
+                        <Route path="/" element={<Flex flexDirection={['column', 'row']} alignItems={['center', 'flex-start']} justifyContent={['center', 'flex-start']} height="100vh" p="8">Home Page</Flex>} />
                         <Route path="/login" element={<Login />} />
                         <Route path="/register" element={<Register />} />
-                        <Route path="/courses" element={<PrivateRoute><CourseList /></PrivateRoute>} />
-                        <Route path="/courses/:courseId" element={<PrivateRoute><CourseDetail /></PrivateRoute>} />
+                        <Route path="/courses" element={<CourseList />} />
+                        <Route path="/courses/:courseId" element={<CourseDetail />} />
                         <Route path="/courses/create" element={<PrivateRoute><InstructorRoute><CourseForm /></InstructorRoute></PrivateRoute>} />
                         <Route path="/courses/:courseId/edit" element={<PrivateRoute><InstructorRoute><CourseForm /></InstructorRoute></PrivateRoute>} />
-                        <Route path="/courses/:courseId/topics" element={<PrivateRoute><TopicList /></PrivateRoute>} />
-                        <Route path="/courses/:courseId/topics/:topicId" element={<PrivateRoute><TopicDetail /></PrivateRoute>} />
+                        <Route path="/courses/:courseId/topics" element={<TopicList />} />
+                        <Route path="/courses/:courseId/topics/:topicId" element={<TopicDetail />} />
                         <Route path="/courses/:courseId/topics/create" element={<PrivateRoute><InstructorRoute><TopicForm /></InstructorRoute></PrivateRoute>} />
                         <Route path="/courses/:courseId/topics/:topicId/edit" element={<PrivateRoute><InstructorRoute><TopicForm /></InstructorRoute></PrivateRoute>} />
                         <Route path="/courses/:courseId/topics/:topicId/exercises" element={<PrivateRoute><ExerciseList /></PrivateRoute>} />

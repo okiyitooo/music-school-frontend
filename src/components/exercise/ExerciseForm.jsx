@@ -16,7 +16,10 @@ const ExerciseForm = () => {
         description: '',
         instructions: '',
         exerciseType: '',
-        answers: {}
+        answers: {
+            question: '',
+            answer: ''
+        }
     });
     const [loading, setLoading] = useState(true);
     const { courseId, exerciseId, topicId } = useParams();
@@ -52,15 +55,18 @@ const ExerciseForm = () => {
 
     const handleSubmit = async () => {
         try {
-            let response;
             if (exerciseId===undefined) 
-                response =await exerciseService.createExercise({ ...exercise, topicId });
+                await exerciseService.createExercise({ ...exercise, topicId });
             else 
-                response =await exerciseService.updateExercise(exerciseId, exercise, );
-            console.log(response)
+                await exerciseService.updateExercise(exerciseId, exercise, );
             navigate(`/courses/${courseId}/topics/${topicId}/exercises`);
         } catch (err) {
-            console.error('Failed to create exercise', err);
+            toast({
+                title: "Error saving exercise",
+                description: err.response?.data?.message || err.data?.message || "Failed to save exercise.",
+                status: "error",
+                isClosable: true,
+            })
         }
     };
 
@@ -70,7 +76,7 @@ const ExerciseForm = () => {
         <ErrorBoundary>
             <Box p={4} borderWidth={1} borderRadius="md">
                 <Stack spacing={4} onSubmit={handleSubmit}>
-                    <Text fontSize="xl">Create New Exercise</Text>
+                    <Text fontSize="xl">{exerciseId ? "Update" : "Create New"} Exercise</Text>
                     <Input
                         placeholder="Name"
                         name="name"

@@ -63,7 +63,7 @@ const MatchingComponentForm = ({ answers, onAnswerChange }) => {
             <Text mb={4}>Question:</Text>
             <Input 
                 placeholder="Question..." 
-                value={answers.question} 
+                value={answers?.question} 
                 onChange={(e) => onAnswerChange({ ...answers, question: e.target.value })} 
                 mb={4}
             />

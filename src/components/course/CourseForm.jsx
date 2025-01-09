@@ -24,14 +24,13 @@ const CourseForm = () => {
     const toast = useToast();
     const { auth } = useContext(AuthContext);
     const { clearAuth } = useAuth();
-    const difficultyOptions = ["veryEasy", "easy", "medium", "hard", "ultraHard"];
+    const difficultyOptions = ["very easy", "easy", "medium", "hard", "ultraHard"];
 
     useEffect(() => {
         const fetchCourses = async() => {
 
             try {
                 const response = await courseService.getAllCourses();
-                console.log(response)
                 if (response.status===200) {
                     const courses = response.data;
                     setCourses(courses)
@@ -123,7 +122,6 @@ const CourseForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        console.log("prerequisites",prerequisites)
         const courseData = {
             name,
             description,

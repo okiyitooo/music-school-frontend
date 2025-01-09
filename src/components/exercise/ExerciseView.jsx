@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Box, Text, Flex, Button, useToast } from '@chakra-ui/react';
 import MultipleChoiceComponent from './question/MultipleChoiceComponent';
 import FillInTheBlankComponent from './question/FillInTheBlankComponent';
 import ShortAnswerComponent from './question/ShortAnswerComponent';
 import MatchingComponent from './question/MatchingComponent';
 import TrueFalseComponent from './question/TrueFalseComponent';
+import { enrollmentService } from '../../services/enrollmentService';
+import { AuthContext } from '../../context/AuthContext';
+import { exerciseService } from '../../services/exerciseService';
 
 /**
  * ExerciseView component renders different types of exercises and handles their submission.
@@ -30,12 +33,13 @@ import TrueFalseComponent from './question/TrueFalseComponent';
  * const handleSubmit = () => console.log('Exercise submitted');
  * return <ExerciseView exercise={exercise} onSubmit={handleSubmit} />;
  */
-const ExerciseView = ({exercise, onSubmit}) => {
+const ExerciseView = ({exercise, onSubmit, courseId, topicId}) => {
     const [selectedOption, setSelectedOption] = useState('');
     const [answer, setAnswer] = useState('');
     const [selectedPairs, setSelectedPairs] = useState({});
     const [completed, setCompleted] = useState(false);
     const toast = useToast();
+    const {auth} = useContext(AuthContext);
 
 
     const handleOptionChange = (value) => setSelectedOption(value);
@@ -45,31 +49,45 @@ const ExerciseView = ({exercise, onSubmit}) => {
         newPairs[key] = value;
         setSelectedPairs(newPairs);
     };
-    const complete = async (answerIsCorrect, badDescription, multipleAnswers) => {
-        console.log("answerIsCorrect",answerIsCorrect)
+
+    useEffect(()=>{
+        //set complete to true if exercise has been completed
+        //if enrollment.progress.topicId.exerciseId === true
+        // set completed = true
+        const updateCompleted = async () => {
+            const enrollmentResponse = await enrollmentService.getEnrollmentsByStudentId(auth.user.userId);
+            if (enrollmentResponse.status===200) {
+                const enrollment = enrollmentResponse.data[0];
+                if (enrollment?.progress[topicId][exercise.exerciseId])
+                    setCompleted(true);
+            }
+        }
+        updateCompleted();
+    }, [auth, topicId, exercise])
+    const complete = (answerIsCorrect, badDescription, multipleAnswers) => {
         if (answerIsCorrect){
-            setCompleted(true);
             toast({
                 title: "Good Job!",
                 description: "Correct Answer"+(multipleAnswers?"s":"")+"!",
                 status: 'success',
-                 duration: 5000,
-                   isClosable: true
-             })
-        } else {
-            setCompleted(false);
-            toast({ title: "Wrong!", description: badDescription || "Incorrect answer, try again!", status: 'warning',
-                 duration: 5000, isClosable: true
+                duration: 5000,
+                isClosable: true
             })
+            return true;
+        } else {
+            toast({ title: "Wrong!", description: badDescription || "Incorrect answer, try again!", status: 'warning',
+                duration: 5000, isClosable: true
+            })
+            return false;
         }
     }
     const handleSubmit = async () => {
-        console.log(exercise, selectedOption, exercise.answers.answer===selectedOption)
+        let isCorrect = false;
         if (exercise.exerciseType === 'multipleChoice') { 
-            await complete(selectedOption===exercise.answers?.answer);
+            isCorrect = await complete(selectedOption===exercise.answers?.answer);
         } 
         if (exercise.exerciseType === 'fillInTheBlank' ) {
-            complete(answer.toLowerCase()===exercise.answers?.answer.toLowerCase())
+            isCorrect = complete(answer.toLowerCase()===exercise.answers?.answer.toLowerCase())
         }
         if (exercise.exerciseType === 'shortAnswer' ) {
             toast({
@@ -77,23 +95,63 @@ const ExerciseView = ({exercise, onSubmit}) => {
                 description: "Answer subitted!",
                 status: 'info', isClosable: true
             })
-            setCompleted(true);
+            isCorrect=true;
         }
         if (exercise.exerciseType === 'trueFalse') {
-            complete(selectedOption === exercise.answers?.answer);
+            isCorrect = complete(selectedOption === exercise.answers?.answer);
         }
         if (exercise.exerciseType === 'matching') {
             let failingPair;
-            const isCorrect = Object.keys(selectedPairs).every(
+            const pairIsCorrect = Object.keys(selectedPairs).every(
                 (key) => {
                     const isPairCorrect = selectedPairs[key] === exercise?.answers?.pairs[key];
                     if (!isPairCorrect)
                         failingPair = key + ' doesn\'t match ' + key
                     return isPairCorrect;
             });
-            complete(isCorrect, failingPair, true)
+            isCorrect = complete(pairIsCorrect, failingPair, true)
         }
-        console.log('Submitted');
+        if (isCorrect) {
+            try {
+                //update progress plan(if completed):
+                //1. get all exercises for the topic
+                //2. get the enrollment for the topic and student
+                //3. add/update an object in the form of {exerciseId: true} to the progress object
+                const studentResponse = await enrollmentService.getEnrollmentsByStudentId(auth.user.userId);
+                if (studentResponse.status===200) {
+                    const filteredEnrollment = studentResponse.data?.filter(enrollment=>enrollment.courseId===courseId)[0];
+                    if (filteredEnrollment) {
+                        
+                        //mark exercise as complete
+                        filteredEnrollment.progress[topicId][exercise.exerciseId] = true; 
+                        
+                        //update enrollment
+                        await enrollmentService.updateEnrollment(filteredEnrollment.enrollmentId, filteredEnrollment); 
+                        
+                        const exerciseResponse = await exerciseService.getAllExercisesByTopicId(topicId);
+                        const exercisesInTopic = exerciseResponse.data
+                        const hasIncompleteExercises = Object.values(exercisesInTopic).some(exercise => !filteredEnrollment.progress[topicId][exercise.exerciseId]);
+                        const incompleteExercises = exercisesInTopic.filter(exerciseInTopic=>!filteredEnrollment.progress[topicId][exerciseInTopic.exerciseId]);
+                        
+                        // update topic progress
+                        const response = await enrollmentService.updateProgress(filteredEnrollment.enrollmentId, topicId, 
+                            !hasIncompleteExercises
+                            , (exercisesInTopic.length-incompleteExercises.length)/exercisesInTopic.length) 
+                        if (response.status===200) {
+                            setCompleted(true);
+                        }
+                    }
+                }
+            } catch (err) {
+                toast({
+                    title: "Error",
+                    description: err.response || err.response?.message  || "Error updating progress",
+                    status: "error",
+                    duration: 5000,
+                    isClosable: true
+                 })
+              }
+        }
     };
 
     if (completed) return (

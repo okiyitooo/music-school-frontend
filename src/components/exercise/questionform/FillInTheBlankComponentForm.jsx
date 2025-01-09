@@ -27,14 +27,14 @@ const FillInTheBlankComponentForm = ({ answers, onAnswerChange }) => {
             <Text mb={4}>Question:</Text>
             <Input 
                 placeholder="Question..." 
-                value={answers.question} 
+                value={answers?.question || ''} 
                 onChange={(e) => onAnswerChange({ ...answers, question: e.target.value })} 
                 mb={4}
             />
             <Text mb={4}>Correct Answer:</Text>
             <Input 
                 placeholder="Answer..." 
-                value={answers.answer} 
+                value={answers?.answer || ''} 
                 onChange={(e) => onAnswerChange({ ...answers, answer: e.target.value })} 
             />
         </Box>

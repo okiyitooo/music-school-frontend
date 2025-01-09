@@ -5,6 +5,7 @@ import { topicService } from '../../services/topicService';
 import Card from '../reusable/Card';
 import Button from '../reusable/Button';
 import Loading from "../reusable/Loading";
+import ProgressTracker from '../enrollment/ProgressTracker';
 
 const TopicList = () => {
     const [topics, setTopics] = useState([]);
@@ -39,7 +40,10 @@ const TopicList = () => {
     return (
         <Flex direction="column" p="4">
             <Heading as={"h2"} size="xl" mb="6">Topics</Heading>
-            <Flex justify={"flex-end"} mb={4}>
+            <Flex justify={'space-between'} mb={4}>
+                <Link to={`/courses/${courseId}`}>
+                    <Button colorScheme='teal'> Back</Button>
+                </Link>
                 <Link to={`/courses/${courseId}/topics/create`}>
                     <Button> Create Topic</Button>
                 </Link>
@@ -56,6 +60,7 @@ const TopicList = () => {
                             <Link to={`/courses/${courseId}/topics/${topic.topicId}`}>
                                 <Button>View Topic</Button>
                             </Link>
+                            <ProgressTracker topicId={topic.topicId}/>
                         </Card>
                     ))}
                 </Stack>

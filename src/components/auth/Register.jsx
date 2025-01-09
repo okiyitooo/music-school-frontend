@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { Flex, Heading, FormControl, FormLabel, Input, 
-            Button, Alert, AlertIcon, Box, Text, Select } from '@chakra-ui/react';
+            Button, Alert, AlertIcon, Box, Text, Select, 
+            useToast} from '@chakra-ui/react';
 import { useNavigate, Link } from 'react-router-dom';
 import { authService } from '../../services/authService';
 import { AuthContext } from '../../context/AuthContext';
@@ -17,9 +18,11 @@ const Register = () => {
     const [lastName, setLastName] = useState('');
     const [learningPreferences, setLearningPreferences] = useState('');
     const [skillLevel, setSkillLevel] = useState('');
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const {setAuth} = useContext(AuthContext);
     const {setStoredAuth} = useAuth();
+    const toast = useToast()
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -27,6 +30,7 @@ const Register = () => {
             setError('Passwords do not match');
             return;
         }
+        setLoading(true);
         try {
             const response = await authService.signup({ username, email, password, firstName, lastName, learningPreferences, skillLevel });
             if (response.status === 201) {
@@ -37,15 +41,22 @@ const Register = () => {
                         setAuth({isAuthenticated: true, user: userResponse.data, token});
                         setStoredAuth({isAuthenticated: true, user: userResponse.data, token});
                         navigate('/login');
+                        toast({
+                            title: "Success",
+                            description: "Signup Successful",
+                            status: "success",
+                            duration: 5000,
+                            isClosable: true
+                        });
                     } else {
                         setError('Registration failed. Please try again.')
                     }
                 }
             }
         } catch (err) {
-            console.log(err);
             setError(err.response?.data?.message || err.response?.data || 'Registration failed. Please try again.');
         }
+        setLoading(false);
     };
 
     return (
@@ -122,7 +133,7 @@ const Register = () => {
                         </Select>
                     </FormControl>
                     </Box></Flex>
-                    <Button type="submit" colorScheme='blue' width="100%">Register</Button>
+                    <Button type="submit" loadingText='Registering...' isLoading={loading} colorScheme='blue' width="100%">Register</Button>
                 </form>
                 <Text textAlign="center" mt="4">
                     Already have an account?

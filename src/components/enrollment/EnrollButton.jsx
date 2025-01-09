@@ -2,6 +2,8 @@ import React, {useState, useContext} from 'react'
 import { Button, useToast} from '@chakra-ui/react'
 import { enrollmentService } from '../../services/enrollmentService'
 import { AuthContext } from '../../context/AuthContext'
+import { exerciseService } from '../../services/exerciseService'
+import { topicService } from '../../services/topicService'
 
 const EnrollButton = ({courseId, onEnroll}) => {
 
@@ -16,6 +18,19 @@ const EnrollButton = ({courseId, onEnroll}) => {
                 courseId
             }
             const response = await enrollmentService.enrollInCourse(enrollmentData);
+            //for every topic in the course, create a new object with the topicId as the key and an object of exerciseIds and completion status(boolean) as the value
+
+            const incompleteExercises = {}
+            const topicsResponse =  await topicService.getAllTopics()
+            const topicsInCourse = topicsResponse.data.filter(topic=>topic.courseId===courseId);
+            for (const topic of topicsInCourse) {
+                const exercisesResponse = await exerciseService.getAllExercisesByTopicId(topic.topicId)
+                const exercisesInTopic = exercisesResponse.data;
+                const exercises = exercisesInTopic.reduce((acc, exercise) => ({...acc, [exercise.exerciseId]: false}), {})
+                incompleteExercises[topic.topicId] = exercises
+            }
+            await enrollmentService.updateEnrollment(response.data.enrollmentId, {...response.data, progress: incompleteExercises})
+            
             if (response.status === 201) {
                 onEnroll&&onEnroll();
                 toast({
@@ -38,7 +53,7 @@ const EnrollButton = ({courseId, onEnroll}) => {
         setLoading(false);
     }
     return (
-        <Button colorScheme={'blackAlpha'} isLoading={loading} onClick={handleEnroll} loadingText={'Enrolling...'}>Enroll</Button>
+        <Button colorScheme={'teal'} isLoading={loading} onClick={handleEnroll} loadingText={'Enrolling...'}>Enroll</Button>
     )
 
 }

@@ -17,7 +17,6 @@ const ExerciseList = () => {
         const fetchExercises = async () => {
             try {
                 const response = await exerciseService.getAllExercisesByTopicId(topicId);
-                console.log(response.data)
                 setExercises(response.data);
             } catch (err) {
                 toast({

@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react'
 import { Flex, Heading, FormControl, FormLabel, 
-         Input, Button, Alert, AlertIcon, Box, Text } from '@chakra-ui/react';
+         Input, Button, Alert, AlertIcon, Box, Text, 
+         useToast} from '@chakra-ui/react';
 import { useNavigate, Link } from 'react-router-dom';
 import { authService } from '../../services/authService';
 import { AuthContext } from '../../context/AuthContext';
@@ -13,25 +14,31 @@ const Login = () => {
     const [error, setError] = useState('')
     const { setAuth, } = useContext(AuthContext)
     const { setStoredAuth, clearAuth } = useAuth()
+    const toast = useToast();
     const handleSubmit = async (e) => {
         clearAuth();
         e.preventDefault()
         try {
             const response = await authService.login({username, password})
-            console.log()
             if (response.status===200) {
                 const { token } = response.data;
                 const userResponse = await authService.verifyToken(token)
                 if(userResponse.status === 200){
                     setAuth({isAuthenticated: true, user:userResponse.data, token});
                     setStoredAuth({isAuthenticated: true, user:userResponse.data, token});
-                   navigate('/');
+                    navigate('/');
+                    toast({
+                        title: "Success",
+                        description: "Login Successful",
+                        status: "success",
+                        duration: 5000,
+                        isClosable: true
+                    });
                } else {
                   setError('Login failed. Please try again.');
                }
             }
         } catch (err) {
-            console.log(err)
             setError(err.response?.data?.message || err.response?.data || 'Login failed. Please try again.');
         }
     }
