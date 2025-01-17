@@ -1,5 +1,5 @@
-import React, {useEffect, useState, useContext} from "react";
-import { Flex, Heading, Text, Stack, useToast, Box, } from "@chakra-ui/react";
+import React, { useEffect, useState, useContext } from "react";
+import { Flex, Heading, Text, Stack, useToast, Box } from "@chakra-ui/react";
 import { messageService } from "../../services/messageService";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
@@ -7,9 +7,8 @@ import Loading from "../reusable/Loading";
 import Button from "../reusable/Button";
 
 const MessageList = () => {
-
     const [otherUsers, setOtherUsers] = useState([]);
-    const {auth} = useContext(AuthContext);
+    const { auth } = useContext(AuthContext);
     const toast = useToast();
     const [loading, setLoading] = useState(true);
 
@@ -18,12 +17,16 @@ const MessageList = () => {
             try {
                 const messageResponse = await messageService.getAllMessages();
                 const messageData = messageResponse.data;
-                const recievers = messageData.map(({recieverId, recieverName}) => {return {userId:recieverId, userName: recieverName};});
-                const senders = messageData.map(({senderId, senderName}) => {return {userId:senderId, userName: senderName};});
+                const recievers = messageData.map(({ recieverId, recieverName }) => {
+                    return { userId: recieverId, userName: recieverName };
+                });
+                const senders = messageData.map(({ senderId, senderName }) => {
+                    return { userId: senderId, userName: senderName };
+                });
                 const allUsers = [...recievers, ...senders];
                 const uniqueUsersIds = [...new Set(allUsers.map(user => user.userId))];
                 const otherUserIds = uniqueUsersIds.filter(id => id !== auth?.user?.userId && id);
-                const otherUsers = otherUserIds.map(id => allUsers.find(user => user.userId === id))
+                const otherUsers = otherUserIds.map(id => allUsers.find(user => user.userId === id));
                 setOtherUsers(otherUsers);
             } catch (err) {
                 toast({
@@ -38,9 +41,11 @@ const MessageList = () => {
         };
         fetchMessages();
     }, [auth?.user?.userId, toast]);
+
     if (loading) {
         return <Loading message="Loading messages..." />;
     }
+
     return (
         <Flex direction="column" p="4">
             <Heading as="h2" size="xl" mb="6">Messages</Heading>
@@ -57,7 +62,7 @@ const MessageList = () => {
                             View Messages
                         </Button>
                     </Box>
-                )) : <Text>No messages</Text>} 
+                )) : <Text>No messages</Text>}
             </Stack>
         </Flex>
     );

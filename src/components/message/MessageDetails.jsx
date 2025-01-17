@@ -4,9 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { messageService } from "../../services/messageService";
 import { AuthContext } from "../../context/AuthContext";
 import Loading from "../reusable/Loading";
-import Button from "../reusable/Button";
 import { useAuth } from "../../hooks/useAuth";
-import Card from "../reusable/Card";
 import { BiSend } from "react-icons/bi";
 
 const MessageDetails = () => {
@@ -138,3 +136,5 @@ const MessageDetails = () => {
         </Flex>
     );
 }
+
+export default MessageDetails;
