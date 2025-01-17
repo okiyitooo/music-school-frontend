@@ -92,6 +92,23 @@ const Sidebar = () => {
                         </Button>
                     </ListItem>
                 )}
+                {auth?.isAuthenticated && (
+                    <ListItem>
+                        <Button
+                            as={Link}
+                            display="block"
+                            padding="2"
+                            borderRadius="md"
+                            bg={location.pathname === "/messages" ? "gray.200" : "transparent"}
+                            _hover={{ bg: "gray.200" }}
+                            to="/messages"
+                            width="100%"
+                            textAlign="left"
+                            >
+                            Messages
+                            </Button>
+                    </ListItem>
+                )}
             </List>
         </Box>
     )

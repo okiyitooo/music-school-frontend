@@ -21,6 +21,7 @@ import CourseForm from '../components/course/CourseForm';
 import TopicForm from '../components/topic/TopicForm';
 import ExerciseForm from '../components/exercise/ExerciseForm';
 import UserForm from '../components/user/UserForm';
+import MessageRoutes from './MessageRoutes';
 
 const AppRoutes = () => {
     const {auth, setAuth} = useContext(AuthContext);
@@ -99,6 +100,7 @@ const AppRoutes = () => {
                         <Route path="/users" element={<PrivateRoute><AdminRoute><UserList /></AdminRoute></PrivateRoute>} />
                         <Route path="/users/:userId/edit" element={<PrivateRoute><UserForm /></PrivateRoute>} />
                         <Route path="/users/me/edit" element={<PrivateRoute><UserForm /></PrivateRoute>} />
+                        <Route path="/*" element={<PrivateRoute><MessageRoutes /></PrivateRoute>} />
                     </Routes>
                 </Flex>
             </Flex>
