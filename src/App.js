@@ -27,7 +27,7 @@ function App() {
       <AuthContext.Provider value={{ auth, setAuth, logout }}>
         <div className="app-container">
           <ErrorBoundary>
-            <AppRoutes />
+            <AppRoutes/>
           </ErrorBoundary>
           <Footer/>
         </div>

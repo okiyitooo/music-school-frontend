@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState, useRef } from "react";
-import { Flex, Heading, Text, Stack, useToast, Box,Input, IconButton, Spacer, HStack, VStack } from "@chakra-ui/react";
+import { Flex, Heading, Text, useToast, Box,Input, IconButton, HStack, VStack } from "@chakra-ui/react";
 import { useParams, useNavigate } from "react-router-dom";
 import { messageService } from "../../services/messageService";
 import { AuthContext } from "../../context/AuthContext";
@@ -30,7 +30,7 @@ const MessageDetails = () => {
             const otherUser = allMessages.find(message => message.senderId ===  recipientId || message.receiverId === recipientId);
             setOtherUserName(otherUser.senderId===recipientId?otherUser.senderName : otherUser.receiverName);
         } catch (error) {
-            if (error.response.status === 401) {
+            if (error.response?.status === 401) {
             toast({
                 title: "Unauthorized",
                 description: "Your session has expired. Please login again.",

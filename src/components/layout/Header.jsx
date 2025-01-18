@@ -13,7 +13,6 @@ const Header = () => {
         clearAuth();
         navigate('/login');
     };
-
     return (
         <Flex as="nav" bg="gray.200" p="4" align="center" >
             <Heading as="h1" size="lg">
@@ -23,6 +22,7 @@ const Header = () => {
             <HStack spacing="24px">
                 {auth?.isAuthenticated ? (
                     <>
+                         <Button onClick={navigate.bind(this, "/messages")} >Messages</Button>
                         <Button onClick={handleLogout}>Logout</Button>
                         <Button as={Link} to="/profile">
                             Profile
