@@ -25,7 +25,6 @@ const MessageList = () => {
                     return { userId: senderId, userName: senderName };
                 });
                 const allUsers = [...recievers, ...senders];
-                console.log(allUsers);
                 const uniqueUsersIds = [...new Set(allUsers.map(user => user.userId))];
                 const otherUserIds = uniqueUsersIds.filter(id => id !== auth?.user?.userId && id);
                 const otherUsers = otherUserIds.map(id => allUsers.find(user => user.userId === id));

@@ -30,7 +30,6 @@ const MessageForm = () => {
                 setUsers([]);
             }
         } catch (error) {
-            console.log(error);
             if (error.response.status === 401) {
                 toast({
                     title: "Unauthorized",
