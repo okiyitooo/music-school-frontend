@@ -1,5 +1,5 @@
 import axios from 'axios'
-export const API_BASE_URL = 'http://localhost:8082';
+export const API_BASE_URL = 'http://music-theory1.us-east-2.elasticbeanstalk.com';
 export const api = axios.create({
     baseURL: API_BASE_URL,
 });
