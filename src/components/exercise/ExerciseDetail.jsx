@@ -41,7 +41,7 @@ const ExerciseDetail = () => {
     }
     const handleDelete = async () => {
         try {
-            await  exerciseService.deleteExercise(exerciseId)
+            await exerciseService.deleteExercise(exerciseId)
             navigate(`/courses/${courseId}/topics/${topicId}/exercises`)
         } catch (err) {
             toast({
